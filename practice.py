@@ -7,6 +7,7 @@ HEIGHT=600
 os.environ["SDL_VIDEO_CENTERED"]="1"
 actors=["batteryimg", "bottleimg", "chipsimg", "plasticbag"]
 level=1
+game_over=False
 animations=[]
 speed=10
 paperbag=Actor("paperimg")
@@ -34,13 +35,25 @@ def ActorAnimate():
     duration=speed-level
     for i in Actors:
         i.anchor=("center", "bottom")
-        animation=animate(i,duration=duration,on_finished=level_end,y=600)
+        animation=animate(i,duration=duration,on_finished=game_end,y=600)
         animations.append(animation)
 
 def stop_animations():
     for i in animations:
         if i.running:
             i.stop()
+
+def on_mouse_down(pos):
+    for i in Actors:
+        if i.collidepoint(pos):
+            if "paperimg" in i.image:
+                level_end()
+            else:
+                game_end()
+
+def game_end():
+    global game_over
+    game_over=True
 
 def level_end():
     global level
@@ -73,9 +86,15 @@ def update():
 
 def draw():
     global myactors
-    screen.blit("background",(0,0))
-    for i in Actors:
-        i.draw()
+    if game_over==False:
+        screen.blit("background",(0,0))
+        for i in Actors:
+            i.draw()
+    else:
+        screen.blit("background",(0,0))
+        screen.draw.text("Game over!", color="white", center=(400,300))
+
+    
 
 
 pgzrun.go()
