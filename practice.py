@@ -6,7 +6,9 @@ WIDTH=800
 HEIGHT=600
 os.environ["SDL_VIDEO_CENTERED"]="1"
 actors=["batteryimg", "bottleimg", "chipsimg", "plasticbag"]
-level=3
+level=1
+animations=[]
+speed=10
 paperbag=Actor("paperimg")
 myactors=["paperimg"]
 Actors=[]
@@ -27,11 +29,44 @@ def actorsmaking(level):
         i.x=gaps*index
         index+=1
 
-    animate
+def ActorAnimate():
+    global animations
+    duration=speed-level
+    for i in Actors:
+        i.anchor=("center", "bottom")
+        animation=animate(i,duration=duration,on_finished=level_end,y=600)
+        animations.append(animation)
+
+def stop_animations():
+    for i in animations:
+        if i.running:
+            i.stop()
+
+def level_end():
+    global level
+    global Actors
+    global animations
+    global myactors
+    
+    if level==5:
+        pass
+    else:
+        level +=1
+        #print(level)
+        Actors=[]
+        animations=[]
+        myactors=[]
+        stop_animations()
+        
+
+
 
 
 def update():
-    actorsmaking(level)
+    if len(Actors)==0:
+        print(len(myactors))
+        actorsmaking(level)
+        ActorAnimate()
 
 
 
